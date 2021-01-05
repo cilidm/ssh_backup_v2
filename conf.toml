@@ -1,0 +1,63 @@
+# 执行模式 本地、ssh(服务器)、oss(云存储)
+# 本地->ssh => 1 | 本地->oss => 2 | ssh->oss => 3 | ssh->ssh => 4 ｜ oss->oss => 5
+# ssh->本地 => 6 | oss->本地 => 7 | 本地->ssh->oss => 8 | ssh->本地->oss 9 ｜ oss->本地->ssh 10
+# 本地->ssh->ssh->oss->oss | ssh->ssh->oss->oss->本地 | oss->ssh->ssh->oss->本地
+# 已实现 1,2,4,6,7
+run_mode = 7
+
+# 如果需要使用云存储相关功能，需要配置此项，如果不需要则跳过。支持 minio oss cos qiniu upyun obs bos gitee
+store_type = "qiniu"
+
+[dir]
+# 源地址 可选本地地址、ssh目录地址 例: /www/wwwroot/default/site1 或者根目录下 util
+source = "/home"
+# 目标地址 可选本地地址、ssh目录地址
+target = "./runtime/backup"
+# 云存储保存目录名称
+oss_path = "qiniu_backup"
+
+[fileinfo]
+# 需要忽略的文件夹 请写绝对路径 如 "/home/temp"
+except_dir = []
+# 最大并发执行线程数
+max_channel = 5
+
+[ssh]
+source_host = ""
+source_user = ""
+source_pwd = ""
+source_port = 22
+target_host = ""
+target_user = ""
+target_pwd = ""
+target_port = 22
+
+[gitee]
+token = ""
+owner = ""
+repo = ""
+
+[store]
+    [store.minio]
+    access_key = ""
+    secret_key = ""
+    endpoint = ""
+    public_bucket = ""
+    public_bucket_domain = ""
+    private_bucket = ""
+    private_bucket_domain = ""
+    expire = ""
+    region = ""
+    app_id = ""
+    [store.qiniu]
+    access_key = ""
+    secret_key = ""
+    public_bucket = ""
+    public_bucket_domain = ""
+    [stores.oss]
+    [stores.cos]
+    [stores.upyun]
+    [stores.obs]
+    [stores.bos]
+
+

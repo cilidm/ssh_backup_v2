@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>DuplicateFiles</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="https://www.layuicdn.com/layui/css/layui.css" />
+</head>
+<body style="width: 98%;margin: 0 auto;">
+<table class="layui-hide" id="test" lay-filter="test"></table>
+<script src="https://www.layuicdn.com/layui/layui.js"></script>
+<script>
+    layui.use(['table','jquery'], function(){
+        var table = layui.table,$ = layui.jquery;
+        table.render({
+            elem: '#test'
+            ,url:"/index_json"
+            ,toolbar: '#toolbarDemo' //开启头部工具栏，并为其绑定左侧模板
+            ,defaultToolbar: ['filter', 'exports', 'print']
+            ,title: 'DuplicateFiles'
+            ,cols: [[
+                {field: 'file_name', title: '文件名称'}
+                ,{field: 'file_size', title: '文件大小', width: 140,sort: true}
+                ,{field: 'file_source', title: '源文件夹'}
+                ,{field: 'file_target', title: '目标文件夹'}
+                ,{field: 'created_at', title: '上传日期'}
+            ]]
+            ,page: true
+            ,even: true
+            ,skin: 'line' //表格风格
+            ,limits: [20,50,100,500,1000]  // 可分页的数量
+            ,limit: 20 //每页默认显示的数量
+        });
+        table.on('tool(test)', function(obj){
+            var data = obj.data;
+            if(obj.event === 'del'){
+                layer.confirm('是否删除文件' + data.name, function(index){
+                    $.post("/del",{"path":data.path},function (resp) {
+                        layer.close(index);
+                        if(resp.code == 200){
+                            layer.msg("操作成功",{icon: 1,shade:0.3,time:1000},function () {
+                                location.reload();
+                            })
+                        }else{
+                            layer.msg(resp.msg)
+                        }
+                    })
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
