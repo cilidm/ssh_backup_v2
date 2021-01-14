@@ -1,20 +1,20 @@
-# 执行模式 本地、ssh(服务器)、oss(云存储)
-# 本地->ssh => 1 | 本地->oss => 2 | ssh->oss => 3 | ssh->ssh => 4 ｜ oss->oss => 5
-# ssh->本地 => 6 | oss->本地 => 7 | 本地->ssh->oss => 8 | ssh->本地->oss 9 ｜ oss->本地->ssh 10
+# 执行模式 本地、ssh(服务器)、oss(云存储)，已实现 1,2,4,6,7
+# 本地->ssh => 1 | 本地->oss => 2 |  ssh->ssh => 4 ｜ ssh->本地 => 6 |oss->本地 => 7
+# todo
+# ssh->oss => 3 | oss->oss => 5 | 本地->ssh->oss => 8 | ssh->本地->oss 9 ｜ oss->本地->ssh 10
 # 本地->ssh->ssh->oss->oss | ssh->ssh->oss->oss->本地 | oss->ssh->ssh->oss->本地
-# 已实现 1,2,4,6,7
-run_mode = 7
+run_mode = 1
 
-# 如果需要使用云存储相关功能，需要配置此项，如果不需要则跳过。支持 minio oss cos qiniu upyun obs bos gitee
-store_type = "qiniu"
+# 如果需要使用云存储相关功能，需要配置此项，如果不需要则跳过。支持 minio oss cos qiniu upyun obs bos
+store_type = ""
 
 [dir]
 # 源地址 可选本地地址、ssh目录地址 例: /www/wwwroot/default/site1 或者根目录下 util
-source = "/home"
+source = ""
 # 目标地址 可选本地地址、ssh目录地址
-target = "./runtime/backup"
+target = ""
 # 云存储保存目录名称
-oss_path = "qiniu_backup"
+oss_path = ""
 
 [fileinfo]
 # 需要忽略的文件夹 请写绝对路径 如 "/home/temp"
@@ -32,6 +32,10 @@ target_user = ""
 target_pwd = ""
 target_port = 22
 
+[server]
+# http服务监听端口
+http_port = "8000"
+
 [gitee]
 token = ""
 owner = ""
@@ -39,24 +43,35 @@ repo = ""
 
 [store]
     [store.minio]
-    access_key = ""
-    secret_key = ""
-    endpoint = ""
-    public_bucket = ""
-    public_bucket_domain = ""
-    private_bucket = ""
-    private_bucket_domain = ""
-    expire = ""
-    region = ""
-    app_id = ""
+    access_key = ""                                         # AccessKetID
+    secret_key = ""                                         # SecretAccessKey
+    endpoint = ""                                           # Endpoint
+    public_bucket = ""                                      # 存储桶名称
+    public_bucket_domain = ""                               # 请求域名
     [store.qiniu]
-    access_key = ""
-    secret_key = ""
-    public_bucket = ""
-    public_bucket_domain = ""
+    access_key = ""                                         # AccessKetID
+    secret_key = ""                                         # SecretAccessKey
+    public_bucket = ""                                      # 存储桶名称
+    public_bucket_domain = ""                               # 请求域名
     [stores.oss]
+    access_key = ""                                         # AccessKetID
+    secret_key = ""                                         # SecretAccessKey
+    endpoint = ""                                           # Endpoint
+    public_bucket = ""                                      # 存储桶名称
+    public_bucket_domain = ""                               # 请求域名
     [stores.cos]
+    access_key = ""                                         # AccessKetID
+    secret_key = ""                                         # SecretAccessKey
+    region = ""                                             # COS 区域，即 Region
+    app-id = ""                                             # AppID
+    public_bucket = ""                                      # 存储桶名称
+    public_bucket_domain = ""                               # 请求域名
     [stores.upyun]
+    access_key = ""                                         # 操作员
+    secret_key = ""                                         # 操作员密码
+    endpoint = ""                                           # 私有Bucket Secret
+    public_bucket = ""                                      # 公共读Bucket
+    public_bucket_domain = ""                               # 公共读Bucket域名
     [stores.obs]
     [stores.bos]
 
