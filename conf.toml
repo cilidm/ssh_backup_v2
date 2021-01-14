@@ -23,14 +23,14 @@ except_dir = []
 max_channel = 5
 
 [ssh]
-source_host = ""
-source_user = ""
-source_pwd = ""
-source_port = 22
-target_host = ""
-target_user = ""
-target_pwd = ""
-target_port = 22
+source_host = ""        # ssh源IP
+source_user = ""        # ssh用户名
+source_pwd = ""         # ssh密码
+source_port = 22        # ssh端口
+target_host = ""        # ssh->ssh传输时目标ssh IP地址
+target_user = ""        # ssh用户名
+target_pwd = ""         # ssh密码
+target_port = 22        # ssh端口
 
 [server]
 # http服务监听端口
@@ -42,31 +42,31 @@ owner = ""
 repo = ""
 
 [store]
-    [store.minio]
+    [store.minio]                                           # 【minio存储】
     access_key = ""                                         # AccessKetID
     secret_key = ""                                         # SecretAccessKey
     endpoint = ""                                           # Endpoint
     public_bucket = ""                                      # 存储桶名称
     public_bucket_domain = ""                               # 请求域名
-    [store.qiniu]
+    [store.qiniu]                                           # 【七牛云存储】
     access_key = ""                                         # AccessKetID
     secret_key = ""                                         # SecretAccessKey
     public_bucket = ""                                      # 存储桶名称
     public_bucket_domain = ""                               # 请求域名
-    [stores.oss]
+    [stores.oss]                                            # 【阿里云存储】
     access_key = ""                                         # AccessKetID
     secret_key = ""                                         # SecretAccessKey
     endpoint = ""                                           # Endpoint
     public_bucket = ""                                      # 存储桶名称
     public_bucket_domain = ""                               # 请求域名
-    [stores.cos]
+    [stores.cos]                                            # 【腾讯云存储】
     access_key = ""                                         # AccessKetID
     secret_key = ""                                         # SecretAccessKey
     region = ""                                             # COS 区域，即 Region
     app-id = ""                                             # AppID
     public_bucket = ""                                      # 存储桶名称
     public_bucket_domain = ""                               # 请求域名
-    [stores.upyun]
+    [stores.upyun]                                          # 【又拍云存储】
     access_key = ""                                         # 操作员
     secret_key = ""                                         # 操作员密码
     endpoint = ""                                           # 私有Bucket Secret
