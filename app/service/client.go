@@ -1,9 +1,11 @@
 package service
 
 import (
+	"github.com/cilidm/toolbox/OS"
 	"os"
 	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/cilidm/toolbox/logging"
 	"github.com/pkg/sftp"
@@ -66,9 +68,14 @@ func UploadFile(sourceClient *sftp.Client, targetClient *sftp.Client, remoteDir,
 }
 
 func UploadFromLocal(targetClient *sftp.Client, remoteDir, remoteName, localFilePath string, localSize int64) error {
-	has, err := targetClient.Stat(filepath.Join(remoteDir, remoteName))
+	sshFile := filepath.Join(remoteDir, remoteName)
+	if OS.IsWindows(){
+		remoteDir = strings.ReplaceAll(remoteDir,"\\","/")
+		sshFile = strings.ReplaceAll(sshFile,"\\","/")
+	}
+	has, err := targetClient.Stat(sshFile)
 	if err == nil && (has.Size() == localSize) {
-		logging.Warn("文件", remoteName, "已s存在")
+		logging.Warn("文件",  remoteName, "已存在,")
 		return nil
 	}
 	targetClient.MkdirAll(remoteDir)
@@ -87,7 +94,8 @@ func UploadFromLocal(targetClient *sftp.Client, remoteDir, remoteName, localFile
 		return err
 	}
 	defer srcFile.Close()
-	dstFile, err := targetClient.Create(filepath.Join(remoteDir, remoteName)) // 如果文件存在，create会清空原文件 openfile会追加
+	logging.Debug(sshFile)
+	dstFile, err := targetClient.Create(sshFile) // 如果文件存在，create会清空原文件 openfile会追加
 	if err != nil {
 		return err
 	}
