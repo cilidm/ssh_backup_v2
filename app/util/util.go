@@ -3,11 +3,13 @@ package util
 import (
 	"crypto/md5"
 	"fmt"
-	"github.com/cilidm/toolbox/logging"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/cilidm/toolbox/OS"
+	"github.com/cilidm/toolbox/logging"
 )
 
 const (
@@ -44,6 +46,9 @@ func GetLdbPreKey(path string) string {
 
 // 原文件夹地址/home 目标文件夹地址/newPath 文件地址/home/a/b/ca.txt 则返回/newPath/a/b/ca.txt
 func GetNewPath(source, target, dst string) string {
+	if OS.IsWindows() {
+		dst = strings.ReplaceAll(dst, "\\", "/")
+	}
 	return filepath.Join(target, strings.ReplaceAll(dst, source, ""))
 }
 
@@ -83,7 +88,6 @@ func GetMdByPath(path string) (string, error) {
 	}
 	return fmt.Sprintf("%x", md5hash.Sum(nil)), nil
 }
-
 
 // 检测并创建文件夹
 //func PathExists(path string) (bool, error) {
