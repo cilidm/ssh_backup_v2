@@ -1,11 +1,12 @@
 package service
 
 import (
-	"github.com/cilidm/toolbox/logging"
-	"github.com/pkg/sftp"
 	"os"
 	"path"
 	"path/filepath"
+
+	"github.com/cilidm/toolbox/logging"
+	"github.com/pkg/sftp"
 )
 
 // remotePath服务器路径 localPath本地路径
@@ -70,17 +71,23 @@ func UploadFromLocal(targetClient *sftp.Client, remoteDir, remoteName, localFile
 		logging.Warn("文件", remoteName, "已s存在")
 		return nil
 	}
+	targetClient.MkdirAll(remoteDir)
+	err = targetClient.Chmod(remoteDir, os.ModePerm)
+	if err != nil {
+		return err
+	}
 	_, err = ClientPathExists(remoteDir, targetClient)
 	if err != nil {
 		return err
 	}
+
 	srcFile, err := os.Open(localFilePath)
 	if err != nil {
 		logging.Error("源文件无法读取", err.Error())
 		return err
 	}
 	defer srcFile.Close()
-	dstFile, err := targetClient.Create(path.Join(remoteDir, remoteName)) // 如果文件存在，create会清空原文件 openfile会追加
+	dstFile, err := targetClient.Create(filepath.Join(remoteDir, remoteName)) // 如果文件存在，create会清空原文件 openfile会追加
 	if err != nil {
 		return err
 	}
@@ -110,5 +117,3 @@ func ClientPathExists(path string, client *sftp.Client) (bool, error) {
 	err = client.Chmod(path, os.ModePerm)
 	return false, err
 }
-
-
