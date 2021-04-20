@@ -2,11 +2,7 @@ package service
 
 import (
 	"fmt"
-	"github.com/cilidm/toolbox/levelDB"
-	"github.com/cilidm/toolbox/logging"
-	"github.com/cilidm/toolbox/str"
 	"os"
-	"path"
 	"path/filepath"
 	"ssh_backup/app/client"
 	conf "ssh_backup/app/config"
@@ -14,6 +10,10 @@ import (
 	"ssh_backup/app/util"
 	"strings"
 	"time"
+
+	"github.com/cilidm/toolbox/levelDB"
+	"github.com/cilidm/toolbox/logging"
+	"github.com/cilidm/toolbox/str"
 )
 
 // begin from local
@@ -25,7 +25,7 @@ func WalkPath(dir string) {
 		return
 	}
 	for _, v := range paths {
-		if str.IsContain(conf.Conf.FileInfo.ExceptDir, v) {
+		if str.IsContain(conf.Conf.FileInfo.ExceptDir, v) || util.HasPathPrefix(conf.Conf.FileInfo.ExceptDir, v) {
 			continue
 		}
 		stat, err := os.Stat(v)
@@ -84,11 +84,13 @@ func GetFileInfo(v string) {
 func UploadLocalFile(v model.FileInfo) {
 	fmt.Println("开始传输文件", v.FileName)
 	logging.Info("开始传输文件", v.FileName)
-	dir, fileName := path.Split(v.FileTarget)
+	//dir, fileName := path.Split(v.FileTarget)
+	dir, fileName := filepath.Split(v.FileTarget)
 	// 源地址，
 	if err := UploadFromLocal(client.Instance(), dir, fileName, v.FileSource, v.FileSize); err != nil {
 		v.Status = model.ProssErr
 		levelDB.GetServer().Insert(util.GetLdbKey(conf.Conf.Dir.Source, v.FileSource), &v)
+		fmt.Println("upload file err :", err.Error())
 		logging.Error("upload file err :", err)
 		return
 	}
